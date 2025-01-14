@@ -1,0 +1,12 @@
+.venv
+.idea
+.env
+test
+__pycache__
+.DS_Store
+*.png
+*.jpg
+*.jpeg
+*.pdf
+des.md
+keys
