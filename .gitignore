@@ -1,6 +1,7 @@
 .venv
 .idea
 .env
+test.*
 test
 __pycache__
 .DS_Store
@@ -10,3 +11,4 @@ __pycache__
 *.pdf
 des.md
 keys
+test.py
