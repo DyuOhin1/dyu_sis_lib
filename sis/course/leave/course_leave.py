@@ -1,6 +1,6 @@
 import re
 from datetime import date, datetime
-from typing import List
+from typing import List, BinaryIO
 
 import requests
 from bs4 import BeautifulSoup
@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 from sis.connection import Connection, login_required
 from sis.constant.api import DyuWebAPI
 from sis.course.leave.constant.leave_result import LeaveResult
+from sis.course.leave.leave_utils import LeaveUtils
 from sis.modals.course import CourseWithDate
 from sis.course.leave.modals.leave_data import LeaveData
 from sis.course.leave.modals.leave_detail import LeaveDetail
@@ -16,6 +17,37 @@ from sis.modals.teacher import Teacher
 
 
 class CourseLeave:
+    @staticmethod
+    @login_required
+    def submit_document(
+            conn: Connection,
+            leave_id : str,
+            file: BinaryIO
+    ) -> dict[str, str]:
+        """
+        提交請假證明文件
+        :param conn:
+        :param leave_id: 請假編號
+        :param file: 證明文件
+        :return: dict[str, str]
+        """
+
+        # 提交請假證明文件，docid 為請假編號，php session id 為登入後的 session id，用於驗證身分
+        res = requests.post(
+            DyuWebAPI.SIS_LEAVE_SUBMIT_DOC,
+            files={"path": file},
+            data={"vac_id": leave_id},
+            cookies={"PHPSESSID": conn.php_session_id}
+        )
+
+        if res.status_code < 200 or res.status_code >= 300:
+            raise Exception(f"Submit document failed, status code: {res.status_code}")
+
+        res.encoding = 'utf-8'
+        return LeaveUtils.parse_result_from_html(
+            res.text
+        )
+
 
     @staticmethod
     @login_required
@@ -124,7 +156,7 @@ class CourseLeave:
     def cancel(
             conn : Connection,
             leave_id : str
-    ):
+    ) -> dict[str, str]:
         """
         取消請假
         :param conn: Connection
@@ -141,8 +173,11 @@ class CourseLeave:
         if res.status_code < 200 or res.status_code >= 300:
             raise Exception(f"Cancel leave failed, status code: {res.status_code}")
 
-        # TODO: 解析取消請假結果
-        return res.text
+        res.encoding = 'utf-8'
+        return LeaveUtils.parse_result_from_html(
+            res.text
+        )
+
 
     @staticmethod
     @login_required
@@ -261,9 +296,9 @@ class CourseLeave:
 
     @staticmethod
     def info(
-            s_time : date,
-            e_time : date,
-            s_id : str
+            s_time : date = date.today(),
+            e_time : date = date.today(),
+            s_id : str = None
     ) -> List[CourseWithDate]:
         """
         取得 指定時間、學號 的課程資訊(含請假資訊)
@@ -272,6 +307,9 @@ class CourseLeave:
         :param s_id: 查詢學號
         :return: List[CourseWithDate]
         """
+
+        if s_id is None:
+            raise Exception("Student ID can not be None")
 
         # 取得課程資訊(含請假資訊)的 url
         url = DyuWebAPI.get_course_info_url(s_time, e_time, s_id)

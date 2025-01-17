@@ -16,9 +16,11 @@ class DyuWebAPI:
     # 指定學號課程資訊(含請假狀態)
     SIS_LEAVE_COURSE_INFO = SIS_HOST + "leave/student_class.php"
     # 請假 post url
-    SIS_LEAVE_POST = SIS_HOST + "leave/leave_data.php?page=page_system.php?page=MTI="
+    SIS_LEAVE_POST = SIS_HOST + "leave/leave_data.php"
+    # 請假補交證明 post url
+    SIS_LEAVE_SUBMIT_DOC = SIS_HOST + "leave/update_path.php"
     # 重要集會請假 post url
-    SIS_MEETING_LEAVE_POST = SIS_HOST + "leave/meeting_leave_data.php?page=page_system.php?page=MTI="
+    SIS_MEETING_LEAVE_POST = SIS_HOST + "leave/meeting_leave_data.php"
     # 請假取消 url, doc_id 為請假紀錄的 id, page 為送出後　return 的頁面
     SIS_LEAVE_CANCEL = SIS_HOST + "leave/leave_cancel.php"
     # 請假紀錄詳細資訊, doc_id 為請假紀錄的 id
@@ -27,6 +29,7 @@ class DyuWebAPI:
     SIS_INJURY_RECORD = SIS_HOST + "page_system.php?page=NQ=="
     # 課程預警
     SIS_COURSE_WARNING = SIS_HOST + "page_system.php?page=OQ=="
+
 
     @staticmethod
     def get_course_info_url(s_date : date, e_date : date, s_id : str) -> str:
