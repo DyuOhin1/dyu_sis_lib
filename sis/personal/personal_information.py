@@ -1,7 +1,7 @@
 import base64
 import json
 import re
-from typing import Any, Generator
+from typing import Generator
 
 import requests
 
@@ -9,10 +9,10 @@ from icloud.constant.icloud_web_api import iCloudWebApi
 from sis.connection import login_required, Connection
 from sis.constant.api import DyuWebAPI
 from sis.personal import info_map
-from bs4 import BeautifulSoup
-
+from sis.personal.grduation import Graduation
 from sis.personal.modals.course_warning_DTO import CourseWarningDTO
 from sis.personal.modals.injury_record import InjuryRecord
+from sis.personal.personal_untils import PersonalUtils
 
 # TODO: add exception handling
 """
@@ -24,6 +24,7 @@ from sis.personal.modals.injury_record import InjuryRecord
 - 成績文件申請
 """
 class PersonalInformation:
+    graduation = Graduation
 
     @staticmethod
     def personal_course_list_pdf(
@@ -103,78 +104,10 @@ class PersonalInformation:
 
     @staticmethod
     @login_required
-    def graduation_pdf(
-        conn : Connection
-    ) -> str:
-        """
-        取得畢業資訊 PDF
-        """
-        req = requests.get(
-            DyuWebAPI.SIS_GRADUATION_INFO_PDF,
-            cookies={
-                "PHPSESSID": conn.php_session_id
-            }
-        )
-
-        return base64.b64encode(req.content).decode("utf-8")
-
-    @staticmethod
-    @login_required
-    def graduation(
-        conn: Connection
-    ) -> dict:
-        """
-        取得畢業資訊
-        """
-        def parse_credits(credit_section):
-            return [
-                {
-                    "credit": credit.contents[3].text,
-                    "count": credit.contents[1].text.strip("()")
-                }
-                for credit in credit_section.contents[1:]
-            ]
-
-        req = requests.get(
-            DyuWebAPI.SIS_GRADUATION_INFO,
-            cookies={"PHPSESSID": conn.php_session_id}
-        )
-
-        soup = BeautifulSoup(req.text, "html.parser")
-
-        titles = [
-            t.get_text(strip=True)
-            for t in soup.find("div", class_="title row-ex")
-            if t.get_text(strip=True)
-        ]
-
-        context = soup.find("div", class_="context")
-
-        required_credit = [
-            credit.get_text(strip=True)
-            for credit in context.contents[1]
-            if credit.get_text(strip=True).isdigit()
-        ]
-        required_credit.append("-")
-
-        earned_credit = parse_credits(context.contents[2])
-        in_progress_credit = parse_credits(context.contents[3])
-        missing_credit = parse_credits(context.contents[4])
-
-        return {
-            "title": titles,
-            "required": required_credit,
-            "earned": earned_credit,
-            "in_process": in_progress_credit,
-            "missing": missing_credit
-        }
-
-    @staticmethod
-    @login_required
     def course_warning(
             conn : Connection
     ) -> list[CourseWarningDTO]:
-        course_warning_row = PersonalInformation.__fetch_and_parse(
+        course_warning_row = PersonalUtils.fetch_and_parse(
             conn,
             start=1,
             end=8
@@ -203,7 +136,7 @@ class PersonalInformation:
         :param conn: Connection object with php session id
         :return: dict
         """
-        injury_row_list = PersonalInformation.__fetch_and_parse(
+        injury_row_list = PersonalUtils.fetch_and_parse(
             DyuWebAPI.SIS_INJURY_RECORD,
             conn,
             start=1,
@@ -269,57 +202,3 @@ class PersonalInformation:
 
         # return 並轉會成 json data
         return info_map.convert(info)
-
-    @staticmethod
-    @login_required
-    def __fetch_and_parse(
-            url: str,
-            conn: Connection,
-            start: int,
-            end: int
-    ) -> list[list[str]]:
-        """
-        發送請求並解析 class=row 的內容。
-
-        :param url: 請求的 URL
-        :param conn: Connection object with PHP session ID
-        :param start: 欄位起始索引
-        :param end: 欄位結束索引
-        :return: 解析後的內容列表，每一列是 list[str]
-        """
-
-        def get_row_content(
-                s_i: int,
-                e_i: int,
-                raw_html_content: str,
-                strip_str: bool = True
-        ) -> list[list]:
-            """
-
-            """
-            soup = BeautifulSoup(raw_html_content, "html.parser")
-            content = soup.find_all("div", class_="row")
-
-            return [
-                [
-                    cell.get_text(strip=strip_str)
-                    for i in range(s_i, e_i + 1)
-                    if (cell := row.find('div', class_=f'column{i}'))
-                ]
-                for row in content
-            ]
-
-        # 發送 HTTP GET 請求
-        req = requests.get(
-            url,
-            cookies={"PHPSESSID": conn.php_session_id}
-        )
-
-        # 檢查回應狀態碼
-        if req.status_code < 200 or req.status_code >= 300:
-            raise Exception(f"Request failed, status code: {req.status_code}")
-
-        req.encoding = "utf-8"
-
-        # 取得並解析 row 內容
-        return get_row_content(start, end, req.text)

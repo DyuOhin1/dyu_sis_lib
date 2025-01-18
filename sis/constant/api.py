@@ -8,6 +8,7 @@ class DyuWebAPI:
     SIS_PERSONAL_COURSE_LIST = SIS_HOST + "course_list/pdf_cour_list.php"
     SIS_GRADUATION_INFO = SIS_HOST + "page_system.php?page=Mjk=&ready=1"
     SIS_GRADUATION_INFO_PDF = SIS_HOST + "graduation_info/stgrad_pdf_stno.php"
+    SIS_GRADUATION_INFO_CERTIFICATION = SIS_HOST + "page_system.php?page=MTg="
 
     # 綜合資料卡
     SIS_PERSONAL_INFO = SIS_HOST + "page_system.php?page=MQ=="
