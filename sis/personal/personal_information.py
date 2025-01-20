@@ -9,7 +9,7 @@ from icloud.constant.icloud_web_api import iCloudWebApi
 from sis.connection import login_required, Connection
 from sis.constant.api import DyuWebAPI
 from sis.personal import info_map
-from sis.personal.grduation import Graduation
+from sis.personal.graduation import Graduation
 from sis.personal.modals.course_warning_DTO import CourseWarningDTO
 from sis.personal.modals.injury_record import InjuryRecord
 from sis.personal.personal_untils import PersonalUtils

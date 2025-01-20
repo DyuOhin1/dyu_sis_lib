@@ -74,7 +74,7 @@ class PersonalUtils:
     @staticmethod
     def get_row_content(
             content : Tag
-    ) -> Iterable[str]:
+    ) -> list[str]:
         return [
             cell
             for row in content.children
