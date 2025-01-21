@@ -3,12 +3,13 @@ from enum import Enum
 from typing import Dict, Union, List, Any, Optional
 
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
 from sis.connection import login_required, Connection
 from sis.constant.api import DyuWebAPI
 from sis.personal.modals.graduation.computer_graduation import ComputerGraduation
 from sis.personal.modals.graduation.language_graduation import LanguageGraduation
+from sis.personal.modals.graduation.working_project import WorkingProject
 from sis.personal.personal_untils import PersonalUtils
 
 class FetchType(Enum):
@@ -20,6 +21,89 @@ class Graduation:
     """
     畢業資訊
     """
+
+    from typing import List, Dict
+    from bs4 import BeautifulSoup, Tag
+
+    @staticmethod
+    @login_required
+    def workplace_exp(
+            conn: Connection
+    ):
+        res = requests.get(
+            "https://sis.dyu.edu.tw/page_system.php?page=MzQ=",
+            cookies={"PHPSESSID": conn.php_session_id}
+        )
+
+        res.encoding = "utf-8"
+
+        soup = BeautifulSoup(res.text, "html.parser")
+
+        content = soup.find("div", id="conduct_content")
+
+        title = []
+        projects = []
+        for child in content.children:
+            if not child.get_text(strip=True):
+                continue
+
+            project = PersonalUtils.get_row_content(child)
+
+            if "明細" in project[-1]:
+                details = child.contents[-1]
+                details_id = details.get("onclick")[-2]
+                projects.append(
+                    WorkingProject(
+                        id=details_id,
+                        title=project[0],
+                        max_hours=int(project[1]),
+                        total_hours=int(project[2]),
+                        cert_hours=int(project[3]),
+                        detail_link=Graduation._get_working_details_link(int(details_id))
+                    ).to_dict()
+                )
+            else:
+                title.append(
+                    {
+                        "title": project[0],
+                        "cert": project[1],
+                        "total": project[2],
+                        None if len(projects) == 0 else "projects": projects
+                    }
+                )
+                projects = []
+        return title
+
+    @staticmethod
+    def _get_working_details_link(details_id: int) -> str:
+        """
+        Get the details link for a working project based on the details ID.
+
+        Args:
+            details_id (int): The ID of the detail (range: 0-8).
+
+        Returns:
+            str: The URL corresponding to the details ID.
+
+        Raises:
+            ValueError: If details_id is out of the valid range (0-8).
+        """
+        # Validate the details ID
+        if not (0 <= details_id <= 8):
+            raise ValueError("Invalid details ID. Allowed range: 0-8")
+
+        # Define a mapping for specific IDs
+        special_links = {
+            5: "graduation_info/work_hour.php?item=5",
+            6: "graduation_info/career_hour.php?item=6",
+            7: "graduation_info/industry_hour.php?item=7",
+            8: "graduation_info/compete_hour.php?item=8",
+        }
+
+        # Return the link for IDs 0-4 or the specific mapping for IDs 5-8
+        if details_id <= 4:
+            return f"graduation_info/work_place.php?item={details_id}"
+        return special_links.get(details_id)
 
     @staticmethod
     @login_required
@@ -36,71 +120,6 @@ class Graduation:
             res.text,
             FetchType.ENGLISH
         )
-
-
-    @staticmethod
-    def __get_language_cert_by_source_html(
-            source_html: str,
-            fetch_type : FetchType,
-            table_content_id_prefix : str = "it",
-            table_result_id : str = "table_result"
-    ) -> dict[str, Union[list[Any], dict[str, Union[str, Any]]]]:
-        def get_graduation(data: list[str]) -> Union[LanguageGraduation, ComputerGraduation]:
-            fetch_type_map = {
-                FetchType.ENGLISH: lambda : LanguageGraduation(
-                    id=data[0],
-                    year=data[1][:3],
-                    semester=data[1][3:4],
-                    title=data[2],
-                    score=data[4],
-                    issuer=data[3]
-                ),
-                FetchType.CHINESE: lambda : LanguageGraduation(
-                    id=data[0],
-                    year=data[1],
-                    semester=data[2],
-                    title=data[3],
-                    score=data[4],
-                ),
-                FetchType.COMPUTER: lambda : ComputerGraduation(
-                    id=data[0],
-                    year=data[5][:3],
-                    semester=data[5][3:4],
-                    title=data[1],
-                    cert_id=data[2],
-                    issuer=data[3],
-                    cert_date=data[4]
-                )
-            }
-
-            try:
-                return fetch_type_map[fetch_type]()
-            except KeyError:
-                raise Exception("Invalid fetch type")
-
-        soup = BeautifulSoup(source_html, "html.parser")
-
-        count = 1
-        return_data = []
-        while row := soup.find("div", id=f"{table_content_id_prefix}{count}"):
-            data = PersonalUtils.get_row_content(row)
-            return_data.append(
-                get_graduation(data)
-            )
-            count += 1
-
-        row = soup.find("div", id=table_result_id) or \
-              soup.find("div", class_=table_result_id)
-        result = PersonalUtils.get_row_content(row)
-
-        return {
-            "data": [row.to_dict() for row in return_data],
-            "passable": {
-                "title": result[0],
-                "result": "通過" if "通過" in result[1] else "不通過"
-            }
-        }
-
 
     @staticmethod
     @login_required
@@ -207,3 +226,65 @@ class Graduation:
             dict(zip(titles, missing_credit))
         ]
 
+    @staticmethod
+    def __get_language_cert_by_source_html(
+            source_html: str,
+            fetch_type: FetchType,
+            table_content_id_prefix: str = "it",
+            table_result_id: str = "table_result"
+    ) -> dict[str, Union[list[Any], dict[str, Union[str, Any]]]]:
+        def get_graduation(data: list[str]) -> Union[LanguageGraduation, ComputerGraduation]:
+            fetch_type_map = {
+                FetchType.ENGLISH: lambda: LanguageGraduation(
+                    id=data[0],
+                    year=data[1][:3],
+                    semester=data[1][3:4],
+                    title=data[2],
+                    score=data[4],
+                    issuer=data[3]
+                ),
+                FetchType.CHINESE: lambda: LanguageGraduation(
+                    id=data[0],
+                    year=data[1],
+                    semester=data[2],
+                    title=data[3],
+                    score=data[4],
+                ),
+                FetchType.COMPUTER: lambda: ComputerGraduation(
+                    id=data[0],
+                    year=data[5][:3],
+                    semester=data[5][3:4],
+                    title=data[1],
+                    cert_id=data[2],
+                    issuer=data[3],
+                    cert_date=data[4]
+                )
+            }
+
+            try:
+                return fetch_type_map[fetch_type]()
+            except KeyError:
+                raise Exception("Invalid fetch type")
+
+        soup = BeautifulSoup(source_html, "html.parser")
+
+        count = 1
+        return_data = []
+        while row := soup.find("div", id=f"{table_content_id_prefix}{count}"):
+            data = PersonalUtils.get_row_content(row)
+            return_data.append(
+                get_graduation(data)
+            )
+            count += 1
+
+        row = soup.find("div", id=table_result_id) or \
+              soup.find("div", class_=table_result_id)
+        result = PersonalUtils.get_row_content(row)
+
+        return {
+            "data": [row.to_dict() for row in return_data],
+            "passable": {
+                "title": result[0],
+                "result": "通過" if "通過" in result[1] else "不通過"
+            }
+        }

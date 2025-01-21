@@ -1,7 +1,8 @@
 from collections.abc import Iterable
+from typing import Union
 
 import requests
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup, Tag, PageElement
 
 from sis.connection import login_required, Connection
 
@@ -76,7 +77,15 @@ class PersonalUtils:
             content : Tag
     ) -> list[str]:
         return [
-            cell
+            result
             for row in content.children
-            if (cell := row.get_text(strip=True))
+            if (result := PersonalUtils.get_content(row))
         ]
+
+    @staticmethod
+    def get_content(
+            page_element : PageElement
+    ) -> Union[str, None]:
+        return s \
+            if (s := page_element.get_text(strip=True)) \
+            else None
