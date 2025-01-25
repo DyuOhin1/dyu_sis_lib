@@ -108,6 +108,7 @@ class PersonalInformation:
             conn : Connection
     ) -> list[CourseWarningDTO]:
         course_warning_row = PersonalUtils.fetch_and_parse(
+            DyuWebAPI.SIS_COURSE_WARNING,
             conn,
             start=1,
             end=8

@@ -41,7 +41,7 @@ class CourseInformation:
             raise Exception("No data")
 
         for i in data["score"]:
-            if i["year"] == year and i["sem"] == semester:
+            if str(i["year"]) == year and str(i["sem"]) == semester:
                 return i
 
         raise Exception("No data for this year and semester")

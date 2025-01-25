@@ -64,7 +64,6 @@ class iCloud:
 
     @staticmethod
     def login(
-            self,
             acc : str,
             pwd : str,
     ) -> Connection:
@@ -76,7 +75,7 @@ class iCloud:
             }
         )
 
-        return self.__get_connection_by_response(
+        return iCloud.__get_connection_by_response(
             acc,
             res
         )

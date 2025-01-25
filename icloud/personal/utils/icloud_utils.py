@@ -1,8 +1,9 @@
 import json
 
 from icloud.constant.icloud_web_api import iCloudWebApi
-from sis.connection import Connection
 import requests
+
+from sis.connection import Connection
 
 
 class iCloudUtils:
