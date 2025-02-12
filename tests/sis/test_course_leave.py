@@ -1,6 +1,7 @@
 import os
 import unittest
 from datetime import datetime
+from pathlib import Path
 
 from dotenv import load_dotenv
 
@@ -56,8 +57,8 @@ class TestCourseLeave(unittest.TestCase):
     def test_002_info(self):
         course = self.sis.course_leave.info(
             s_id=TestCourseLeave.conn.student_id,
-            s_time=datetime(2025, 2, 3),
-            e_time=datetime(2025, 2, 3)
+            s_time=datetime(2025, 2, 20),
+            e_time=datetime(2025, 2, 20)
         )
 
         self.assertIsNotNone(course, "Course leave info is None.")
@@ -80,8 +81,8 @@ class TestCourseLeave(unittest.TestCase):
     def test_004_list(self):
         course = self.sis.course_leave.list(
             TestCourseLeave.conn,
-            datetime(2025, 2, 3),
-            datetime(2025, 2, 3)
+            datetime(2025, 2, 20),
+            datetime(2025, 2, 20)
         )
 
         self.assertIsNotNone(course, "Course leave list is None.")
@@ -97,13 +98,14 @@ class TestCourseLeave(unittest.TestCase):
 
     def test_006_submit_document(self):
         data = self.test_004_list()[0]
-        r = self.sis.course_leave.submit_document(
-            TestCourseLeave.conn,
-            data.id,
-            open("../../test/a.jpg", "rb")
-        )
+        with open(Path(__file__).resolve().parent.parent / "test/a.jpg", "rb") as f:
+            r = self.sis.course_leave.submit_document(
+                TestCourseLeave.conn,
+                data.id,
+                f
+            )
 
-        self.assertTrue(r, "Course leave submit document failed.")
+            self.assertTrue(r, "Course leave submit document failed.")
 
     def test_007_cancel(self):
         data = self.test_004_list()[0]

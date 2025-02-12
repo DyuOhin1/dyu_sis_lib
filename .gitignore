@@ -12,3 +12,6 @@ __pycache__
 des.md
 keys
 test.py
+build
+dist
+dyu_sis_lib.egg-info

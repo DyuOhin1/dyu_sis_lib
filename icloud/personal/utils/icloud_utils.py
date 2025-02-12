@@ -3,11 +3,12 @@ import json
 from icloud.constant.icloud_web_api import iCloudWebApi
 import requests
 
-from sis.connection import Connection
+from sis.connection import Connection, login_required
 
 
 class iCloudUtils:
     @staticmethod
+    @login_required
     def student_semester(
             conn: Connection
     ):
@@ -18,6 +19,7 @@ class iCloudUtils:
         )
 
     @staticmethod
+    @login_required
     def school_timetable():
         res = requests.get(
             iCloudWebApi.SCHOOL_TIMETABLE,
@@ -52,6 +54,7 @@ class iCloudUtils:
         return json_content.get("data")
 
     @staticmethod
+    @login_required
     def fetch_record(
             endpoint: str,
             conn: Connection,
