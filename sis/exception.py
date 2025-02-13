@@ -34,3 +34,7 @@ class UnexpectedResponseException(AuthenticationException):
     """伺服器回應格式不符"""
     pass
 
+class LoginSessionExpiredException(ConnectionException):
+    """登入時戳過期"""
+    pass
+

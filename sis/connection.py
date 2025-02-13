@@ -1,6 +1,9 @@
 from functools import wraps
 import time
 
+from sis.exception import LoginSessionExpiredException
+
+
 def login_required(method):
     """
     用於檢查是否登入，若未登入則拋出例外
@@ -28,7 +31,7 @@ def login_required(method):
         session_validity_period = 10 * 60  # 10 分鐘
         # 若登入時戳與目前時戳相減大於 session_validity_period，則拋出例外
         if (current_timestamp - connection.last_login_timestamp) > session_validity_period:
-            raise RuntimeError("Login session has expired.")
+            raise LoginSessionExpiredException("Login session has expired.")
 
         return method(*args, **kwargs)  # 呼叫原方法
     return wrapper
