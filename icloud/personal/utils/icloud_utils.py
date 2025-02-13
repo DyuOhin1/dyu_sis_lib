@@ -40,7 +40,10 @@ class iCloudUtils:
         """
         # 嘗試解析 JSON
         response.raise_for_status()
-        json_content = response.json()
+        try:
+            json_content = response.json()
+        except json.JSONDecodeError:
+            raise json.JSONDecodeError("Can not parse JSON data")
 
         # 如果不需要檢查 result，直接返回整個 JSON
         if not has_result:
