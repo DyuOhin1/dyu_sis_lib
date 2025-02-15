@@ -52,8 +52,8 @@ class LeaveFormData:
         return {
             "data": {
                 "StartDate": self.start_date.strftime("%Y/%m/%d"),
-                "cla": self.leave_type.code,  # 請假類型
-                "dept": self.from_dept.code if self.from_dept else "",  # 公假必須有要有派出單位
+                "cla": self.leave_type.value,  # 請假類型
+                "dept": self.from_dept.value if self.from_dept else "",  # 公假必須有要有派出單位
                 "MAX_FILE_SIZE": self.max_file_size,  # 2MB
                 "reas": self.reason,
                 "day": 1,

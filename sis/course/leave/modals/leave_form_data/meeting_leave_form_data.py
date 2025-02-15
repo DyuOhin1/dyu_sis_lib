@@ -51,7 +51,7 @@ class MeetingLeaveFormData(LeaveFormData):
         :return: 格式化後的 data
         """
         super_data = super().to_form_data()
-        super_data["data"]["metting_type"] = self.meeting_type.code
+        super_data["data"]["metting_type"] = self.meeting_type.value
         super_data["data"]["meeting"] = self.meeting_name
         super_data["data"]["smye"] = self.smye
         super_data["data"]["smty"] = self.smty

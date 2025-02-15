@@ -183,7 +183,8 @@ class CourseLeave:
     @login_required
     def detail(
             conn: Connection,
-            leave_data : LeaveData
+            leave_id : str,
+            get_message : bool = False
     ):
         """
         取得請假詳細資訊
@@ -194,7 +195,7 @@ class CourseLeave:
 
         # 取得請假詳細資訊，doc_id 為請假編號，php session id 為登入後的 session id，用於驗證身分
         res = requests.get(
-            f"{DyuWebAPI.SIS_LEAVE_DETAIL}?doc_id={leave_data.id}",
+            f"{DyuWebAPI.SIS_LEAVE_DETAIL}?doc_id={leave_id}",
             cookies={"PHPSESSID": conn.php_session_id}
         )
 
@@ -213,17 +214,16 @@ class CourseLeave:
 
         # 取得請假訊息，若無則為 None
         message = None
-        if leave_data.has_message:
+        if get_message:
             # 0.日期 1.審核者姓名 2.來談內容 3.是否為不准假(目前用意不明)
             # 請假訊息格式 be like leave_message[leave_message.length] = new Array("2023/09/30","審核者","審核原因","");
             message_pattern = r'leave_message\[[^\]]+\] = new Array\("([^"]*)","([^"]*)","([^"]*)","([^"]*)"\)'
             # 取得請假訊息 matches，內容為 tuple，會包含 日期、審核者、審核原因。
             message_matches = re.findall(message_pattern, res.text)
             # 若無請假訊息，則 raise exception
-            if len(message_matches) == 0:
-                raise Exception("No message found")
-            # 取得請假訊息
-            message = message_matches[1][2]
+            if len(message_matches) != 0:
+                message = message_matches[1][2]
+
 
         # 設定請假詳細資訊，因為請假基本單位為每節課，因此可能有多筆請假詳細資訊
         leave_details = [
@@ -240,9 +240,8 @@ class CourseLeave:
             )
             for i in info_matches
         ]
-        # 設定請假詳細資訊
-        leave_data.set_details(leave_details)
-        return leave_data
+
+        return leave_details
 
     @staticmethod
     @login_required

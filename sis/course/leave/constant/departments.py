@@ -1,123 +1,164 @@
 from enum import Enum
 
-class Department(Enum):
-    CS = (5100, "資訊工程學系")
-    ENGINEERING = (2000, "工學院院部")
-    HR_PUBLIC_RELATIONS = (5131, "人力資源暨公共關係學系")
-    PERSONNEL_OFFICE = (2200, "人事室")
-    PR_CENTER = (2971, "公關事務中心")
-    PR_SERVICE_OFFICE = (2970, "公關事務暨校友服務處")
-    DOCUMENTS_GROUP = (2107, "文書管理組")
-    DAYCARE_CENTER = (4800, "日照中心籌備處")
-    FOREIGN_LANG_COLLEGE = (2005, "外語學院院部")
-    SUSTAINABILITY_OFFICE = (4700, "永續發展辦公室")
-    BIO_RESOURCES_COLLEGE = (2006, "生物科技暨資源學院院部")
-    BIO_RESOURCES_DEPT = (5180, "生物資源學系")
-    BIOMED_DEPT = (5512, "生物醫學系")
-    LIVING_SUPPORT_GROUP = (2709, "生活與住宿輔導組")
-    BUSINESS_ADMIN = (5110, "企業管理學系")
-    MARKETING_PLANNING = (3121, "企劃行銷組")
-    VEHICLE_RESEARCH_CENTER = (4200, "先進車輛科技研究中心")
-    MULTIMEDIA_PROGRAM = (5096, "多媒體數位內容學士學位學程")
-    ADMIN_AFFAIRS = (2953, "行政事務組")
-    ADMIN_SERVICE = (3122, "行政服務組")
-    MATERIAL_SCIENCE = (5240, "材料科學與工程學系")
-    NETWORK_GROUP = (2602, "系統網路組")
-    CROSS_STRAIT_CENTER = (2955, "兩岸事務中心")
-    OTHER = (8888, "其它")
-    ADMISSION_SERVICE = (2421, "招生暨就學服務中心")
-    SPACE_DESIGN = (5060, "空間設計學系")
-    ARCHITECTURE_RESEARCH = (6600, "建築研究所")
-    RESEARCH_DEVELOPMENT = (2900, "研究發展處")
-    ENGLISH_DEPT = (5212, "英語學系")
-    INDIGENOUS_STUDENT_CENTER = (2430, "原住民族學生資源中心")
-    TEACHER_TRAINING_CENTER = (4210, "師資培育中心")
-    CAMPUS_SECURITY = (2750, "校安中心")
-    PRESIDENT_OFFICE = (2001, "校長室")
-    ADMIN_GROUP = (2601, "校務行政組")
-    QUALITY_CONTROL_GROUP = (2462, "校務品保組")
-    RESEARCH_OFFICE = (4500, "校務研究辦公室")
-    DEVELOPMENT_GROUP = (2461, "校務發展組")
-    QUALITY_ASSURANCE = (2460, "校務發展暨品保處")
-    CAMPUS_ENVIRONMENT = (4012, "校園環境管理暨安全衛生中心")
-    FIRE_SAFETY_PROGRAM = (5082, "消防安全學士學位學程")
-    BAKERY_PROGRAM = (5659, "烘焙暨飲料調製學士學位學程")
-    SECRETARY_OFFICE = (2100, "秘書室")
-    FINANCE_MANAGEMENT = (2810, "財物管理組")
-    FINANCE_DEPT = (5190, "財務金融學系")
-    INTL_BUSINESS = (5150, "國際企業管理學系")
-    INTL_AFFAIRS_CENTER = (2954, "國際事務中心")
-    INTL_SPEC_PROGRAM = (2958, "國際專修部")
-    INTL_CROSS_STRAIT = (2950, "國際暨兩岸交流處")
-    INTL_LANGUAGE_CENTER = (4007, "國際語言中心")
-    EXTENSION_OFFICE = (3120, "推廣教育處")
-    LIBRARY_CATALOG = (2502, "採訪編目組")
-    EDU_RESEARCH_INSTITUTE = (6410, "教育專業發展研究所")
-    ACADEMIC_AFFAIRS = (2400, "教務處")
-    TEACHING_ADMIN = (3201, "教學行政組")
-    TEACHING_RESOURCE_CENTER = (2407, "教學資源中心")
-    INDUSTRY_ACADEMIA_CENTER = (4104, "產學中心")
-    INDUSTRY_COOP_GROUP = (2905, "產學合作組")
-    HR_FIRST_GROUP = (2202, "第一組")
-    DESIGN_ARTS_COLLEGE = (2004, "設計暨藝術學院院部")
-    PART_TIME_MASTER_DESIGN_ARTS = (7001, "設計暨藝術學院碩士在職專班")
-    MASTER_DESIGN_ARTS = (6001, "設計暨藝術學院碩士班")
-    DESIGN_DEPT = (5032, "設計學系")
-    GENERAL_EDU_CENTER = (9010, "通識教育中心")
-    FINE_ARTS = (5070, "造形藝術學系")
-    CREATIVE_DESIGN = (4023, "創意設計中心")
-    INNOVATION_INCUBATION = (2910, "創新育成中心")
-    CHINESE_TEACHING_CENTER = (4026, "華語教學中心")
-    OPTOMETRY_DEPT = (5290, "視光學系")
-    REGISTRATION_GROUP = (2401, "註冊組")
-    MEDIA_ARTS = (5091, "傳播藝術學士學位學程")
-    ACCOUNTING = (2300, "會計室")
-    ACCOUNTING_MANAGEMENT = (5121, "會計與資訊管理學系")
-    RESOURCE_MANAGEMENT = (2811, "資源管理組")
-    SPORTS_MANAGEMENT = (5172, "運動健康管理學系")
-    IT_CENTER = (2600, "電子計算機中心")
-    ELECTRICAL_ENGINEERING = (5040, "電機工程學系")
-    LIBRARY = (2500, "圖書館")
-    MANAGEMENT_COLLEGE = (2003, "管理學院院部")
-    PHD_MANAGEMENT = (8021, "管理學院博士班")
-    PART_TIME_MASTER_MANAGEMENT = (7003, "管理學院碩士在職專班")
-    COMPREHENSIVE_BUSINESS = (2102, "綜合業務組")
-    LANGUAGE_RESOURCES = (4003, "語言教學資源中心")
-    EUROPEAN_CULTURE_TOURISM = (5231, "歐洲文化與旅遊學士學位學程")
-    EUROPEAN_LANGUAGE = (5230, "歐洲語文學系")
-    AUDIT_OFFICE = (2250, "稽核室")
-    HEALTH_CARE_GROUP = (2704, "衛生保健組")
-    EXTRACURRICULAR_CENTER = (2706, "課外活動暨服務學習中心")
-    CURRICULUM_GROUP = (2402, "課務組")
-    POST_BACHELOR_NURSING = (5285, "學士後護理學系")
-    STUDENT_AFFAIRS = (2700, "學生事務處")
-    STUDENT_COUNSELING = (2705, "學生發展輔導組")
-    ACADEMIC_RESEARCH = (2901, "學術研究組")
-    MECHANICAL_AUTOMATION = (5011, "機械與自動化工程學系")
-    HOSPITALITY_MANAGEMENT = (5270, "餐旅管理學系")
-    JAPANESE_APPLIED = (5220, "應用日語學系")
-    FACILITIES_MANAGEMENT = (2812, "營繕管理組")
-    ENVIRONMENTAL_ENGINEERING = (5080, "環境工程學系")
-    ENVIRONMENTAL_EDUCATION_CENTER = (4050, "環境教育中心")
-    ENVIRONMENTAL_MANAGEMENT = (2813, "環境管理組")
-    GENERAL_AFFAIRS = (2800, "總務處")
-    OCCUPATIONAL_THERAPY = (5286, "職能治療學系")
-    CAREER_DEV_CENTER = (2711, "職涯發展暨校友服務籌備中心")
-    BIOMEDICAL_ENGINEERING = (5243, "醫學工程學系")
-    MEDICAL_EQUIP_MASTER = (6800, "醫療器材設計與材料碩士學位學程")
-    MEDICINAL_PLANT = (5251, "藥用植物與食品保健學系")
-    NURSING_HEALTH_COLLEGE = (2008, "護理暨健康學院院部")
-    NURSING_DEPT = (5280, "護理學系")
-    PHYSICAL_EDUCATION = (3200, "體育室")
-    TOURISM_DEPT = (5164, "觀光休閒學系")
-    TOURISM_HOSPITALITY_COLLEGE = (2007, "觀光餐旅學院院部")
+class Department(str, Enum):
+    CS = "5100"
+    ENGINEERING = "2000"
+    HR_PUBLIC_RELATIONS = "5131"
+    PERSONNEL_OFFICE = "2200"
+    PR_CENTER = "2971"
+    PR_SERVICE_OFFICE = "2970"
+    DOCUMENTS_GROUP = "2107"
+    DAYCARE_CENTER = "4800"
+    FOREIGN_LANG_COLLEGE = "2005"
+    SUSTAINABILITY_OFFICE = "4700"
+    BIO_RESOURCES_COLLEGE = "2006"
+    BIO_RESOURCES_DEPT = "5180"
+    BIOMED_DEPT = "5512"
+    LIVING_SUPPORT_GROUP = "2709"
+    BUSINESS_ADMIN = "5110"
+    MARKETING_PLANNING = "3121"
+    VEHICLE_RESEARCH_CENTER = "4200"
+    MULTIMEDIA_PROGRAM = "5096"
+    ADMIN_AFFAIRS = "2953"
+    ADMIN_SERVICE = "3122"
+    MATERIAL_SCIENCE = "5240"
+    NETWORK_GROUP = "2602"
+    CROSS_STRAIT_CENTER = "2955"
+    OTHER = "8888"
+    ADMISSION_SERVICE = "2421"
+    SPACE_DESIGN = "5060"
+    ARCHITECTURE_RESEARCH = "6600"
+    RESEARCH_DEVELOPMENT = "2900"
+    ENGLISH_DEPT = "5212"
+    INDIGENOUS_STUDENT_CENTER = "2430"
+    TEACHER_TRAINING_CENTER = "4210"
+    CAMPUS_SECURITY = "2750"
+    PRESIDENT_OFFICE = "2001"
+    ADMIN_GROUP = "2601"
+    QUALITY_CONTROL_GROUP = "2462"
+    RESEARCH_OFFICE = "4500"
+    DEVELOPMENT_GROUP = "2461"
+    QUALITY_ASSURANCE = "2460"
+    CAMPUS_ENVIRONMENT = "4012"
+    FIRE_SAFETY_PROGRAM = "5082"
+    BAKERY_PROGRAM = "5659"
+    SECRETARY_OFFICE = "2100"
+    FINANCE_MANAGEMENT = "2810"
+    FINANCE_DEPT = "5190"
+    INTL_BUSINESS = "5150"
+    INTL_AFFAIRS_CENTER = "2954"
+    INTL_SPEC_PROGRAM = "2958"
+    INTL_CROSS_STRAIT = "2950"
+    INTL_LANGUAGE_CENTER = "4007"
+    EXTENSION_OFFICE = "3120"
+    LIBRARY_CATALOG = "2502"
+    EDU_RESEARCH_INSTITUTE = "6410"
+    ACADEMIC_AFFAIRS = "2400"
+    TEACHING_ADMIN = "3201"
+    TEACHING_RESOURCE_CENTER = "2407"
+    INDUSTRY_ACADEMIA_CENTER = "4104"
+    INDUSTRY_COOP_GROUP = "2905"
+    HR_FIRST_GROUP = "2202"
+    DESIGN_ARTS_COLLEGE = "2004"
+    PART_TIME_MASTER_DESIGN_ARTS = "7001"
+    MASTER_DESIGN_ARTS = "6001"
+    DESIGN_DEPT = "5032"
+    GENERAL_EDU_CENTER = "9010"
+    FINE_ARTS = "5070"
+    CREATIVE_DESIGN = "4023"
+    INNOVATION_INCUBATION = "2910"
+    CHINESE_TEACHING_CENTER = "4026"
+    OPTOMETRY_DEPT = "5290"
+    REGISTRATION_GROUP = "2401"
+    MEDIA_ARTS = "5091"
+    ACCOUNTING = "2300"
+    ACCOUNTING_MANAGEMENT = "5121"
+    RESOURCE_MANAGEMENT = "2811"
+    SPORTS_MANAGEMENT = "5172"
+    IT_CENTER = "2600"
+    ELECTRICAL_ENGINEERING = "5040"
+    LIBRARY = "2500"
 
-    def __init__(self, code, description):
-        """
-        初始化 Department
-        :param code: 部門代碼
-        :param description: 部門名稱
-        """
-
-        self.code = code
-        self.description = description
+    @property
+    def description(self):
+        """ 取得部門的實際名稱 """
+        descriptions = {
+            "5100": "資訊工程學系",
+            "2000": "工學院院部",
+            "5131": "人力資源暨公共關係學系",
+            "2200": "人事室",
+            "2971": "公關事務中心",
+            "2970": "公關事務暨校友服務處",
+            "2107": "文書管理組",
+            "4800": "日照中心籌備處",
+            "2005": "外語學院院部",
+            "4700": "永續發展辦公室",
+            "2006": "生物科技暨資源學院院部",
+            "5180": "生物資源學系",
+            "5512": "生物醫學系",
+            "2709": "生活與住宿輔導組",
+            "5110": "企業管理學系",
+            "3121": "企劃行銷組",
+            "4200": "先進車輛科技研究中心",
+            "5096": "多媒體數位內容學士學位學程",
+            "2953": "行政事務組",
+            "3122": "行政服務組",
+            "5240": "材料科學與工程學系",
+            "2602": "系統網路組",
+            "2955": "兩岸事務中心",
+            "8888": "其它",
+            "2421": "招生暨就學服務中心",
+            "5060": "空間設計學系",
+            "6600": "建築研究所",
+            "2900": "研究發展處",
+            "5212": "英語學系",
+            "2430": "原住民族學生資源中心",
+            "4210": "師資培育中心",
+            "2750": "校安中心",
+            "2001": "校長室",
+            "2601": "校務行政組",
+            "2462": "校務品保組",
+            "4500": "校務研究辦公室",
+            "2461": "校務發展組",
+            "2460": "校務發展暨品保處",
+            "4012": "校園環境管理暨安全衛生中心",
+            "5082": "消防安全學士學位學程",
+            "5659": "烘焙暨飲料調製學士學位學程",
+            "2100": "秘書室",
+            "2810": "財物管理組",
+            "5190": "財務金融學系",
+            "5150": "國際企業管理學系",
+            "2954": "國際事務中心",
+            "2958": "國際專修部",
+            "2950": "國際暨兩岸交流處",
+            "4007": "國際語言中心",
+            "3120": "推廣教育處",
+            "2502": "採訪編目組",
+            "6410": "教育專業發展研究所",
+            "2400": "教務處",
+            "3201": "教學行政組",
+            "2407": "教學資源中心",
+            "4104": "產學中心",
+            "2905": "產學合作組",
+            "2202": "第一組",
+            "2004": "設計暨藝術學院院部",
+            "7001": "設計暨藝術學院碩士在職專班",
+            "6001": "設計暨藝術學院碩士班",
+            "5032": "設計學系",
+            "9010": "通識教育中心",
+            "5070": "造形藝術學系",
+            "4023": "創意設計中心",
+            "2910": "創新育成中心",
+            "4026": "華語教學中心",
+            "5290": "視光學系",
+            "2401": "註冊組",
+            "5091": "傳播藝術學士學位學程",
+            "2300": "會計室",
+            "5121": "會計與資訊管理學系",
+            "2811": "資源管理組",
+            "5172": "運動健康管理學系",
+            "2600": "電子計算機中心",
+            "5040": "電機工程學系",
+            "2500": "圖書館",
+        }
+        return descriptions[self.value]

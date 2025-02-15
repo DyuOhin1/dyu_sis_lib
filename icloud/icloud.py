@@ -37,7 +37,7 @@ class iCloud:
         for i in teacher_data:
             if not i["img"]:
                 break
-            i["img"] = base64.b64decode(i["img"].split(",")[1])
+            i["img"] = i["img"].split(",")[1]
 
         return teacher_data
 

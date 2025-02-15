@@ -33,12 +33,12 @@ class CourseWithDate(Course):
     def __init__(
             self,
             course_date: date,
-            course_weekday: int,
-            course_pending: bool,
             course_id: str,
             course_period: int,
-            course_name: str,
-            course_teacher: Teacher,
+            course_weekday: int = None,
+            course_pending: bool = None,
+            course_name: str = None,
+            course_teacher: Teacher = None,
             location: str = None,
     ):
         """

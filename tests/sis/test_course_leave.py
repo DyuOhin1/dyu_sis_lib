@@ -98,7 +98,7 @@ class TestCourseLeave(unittest.TestCase):
 
     def test_006_submit_document(self):
         data = self.test_004_list()[0]
-        with open(Path(__file__).resolve().parent.parent / "test/a.jpg", "rb") as f:
+        with open(Path(__file__).resolve().parent.parent.parent / "test/a.jpg", "rb") as f:
             r = self.sis.course_leave.submit_document(
                 TestCourseLeave.conn,
                 data.id,

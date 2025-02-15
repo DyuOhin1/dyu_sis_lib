@@ -26,13 +26,6 @@ def login_required(method):
         if connection is None:
             raise ValueError("缺少 Connection 實例。")
 
-        # 檢查是否登入
-        current_timestamp = time.time()
-        session_validity_period = 10 * 60  # 10 分鐘
-        # 若登入時戳與目前時戳相減大於 session_validity_period，則拋出例外
-        if (current_timestamp - connection.last_login_timestamp) > session_validity_period:
-            raise LoginSessionExpiredException("Login session has expired.")
-
         return method(*args, **kwargs)  # 呼叫原方法
     return wrapper
 
