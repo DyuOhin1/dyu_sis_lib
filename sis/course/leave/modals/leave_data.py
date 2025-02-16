@@ -53,7 +53,7 @@ class LeaveData:
         self.details = details
 
     @staticmethod
-    def from_source(matches : list, student_id : str) -> list:
+    def from_source(matches : list, doc_link : str, student_id : str) -> list:
         """
         將爬取的資料轉換成 LeaveData
         :param matches: 爬取的資料
@@ -69,6 +69,6 @@ class LeaveData:
                 leave_status = match[4],
                 has_message = match[5] == "1",
                 date = datetime.strptime(match[7], "%Y/%m/%d").date(),
-                document_link = f'http://163.23.1.52/dyu_vacation/up_load/113/1/{student_id}/{match[8]}' if match[8] else None
+                document_link = f'{doc_link}{student_id}/{match[8]}' if match[8] else None
             ) for match in matches
         ]

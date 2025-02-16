@@ -174,57 +174,92 @@ class Graduation:
         )
 
         return base64.b64encode(req.content).decode("utf-8")
+    """
+    uni_req → University Required
+    col_req → College Required
+    dep_req → Department Required
+    dep_elec → Department Elective
+    free_req → Free Required
+    free_elec → Free Elective
+    total → Total Credits
+    uncat → Uncategorized Credits
+    """
+    info_titles = [
+        "uni_req",
+        "col_req",
+        "dep_req",
+        "dep_elec",
+        "free_req",
+        "free_elec",
+        "total",
+        "uncat",
+    ]
 
     @staticmethod
     @login_required
-    def info(
-            conn: Connection
-    ) -> list[Union[dict[str, Any], dict[str, dict[str, Any]]]]:
+    def info(conn: Connection) -> dict[str, dict[str, int]]:
         """
-        取得畢業資訊，包含畢業標準、已修學分、修課中學分、尚缺學分
+        取得畢業資訊：
+        - `req`: 應修學分
+        - `earned`: 已修學分
+        - `count`: 修課數量
+        - `in_progress`: 修習中學分
+        - `missing`: 缺修學分
         """
 
         def parse_credits(credit_section):
+            """解析學分數據，處理 `"-"` 和括號內數字"""
             return [
                 {
-                    "credit": credit.contents[3].text,
-                    "count": credit.contents[1].text.strip("()")
+                    "credit": int(credit.contents[3].text.strip()) if credit.contents[3].text.strip(
+                        "-").isdigit() else 0,
+                    "count": int(credit.contents[1].text.strip("()")) if credit.contents[1].text.strip(
+                        "()").isdigit() else 0
                 }
                 for credit in credit_section.contents[1:]
             ]
 
+        # **請求 SIS 畢業資訊**
         req = requests.get(
             DyuWebAPI.SIS_GRADUATION_INFO,
             cookies={"PHPSESSID": conn.php_session_id}
         )
-
         soup = BeautifulSoup(req.text, "html.parser")
+        context = soup.find("div", class_="context")
 
+        # **確保 `titles` 的順序**
         titles = [
             t.get_text(strip=True)
             for t in soup.find("div", class_="title row-ex")
             if t.get_text(strip=True)
         ]
 
-        context = soup.find("div", class_="context")
-
+        #  解析應修學分數
         required_credit = [
-            credit.get_text(strip=True)
+            int(credit.get_text(strip=True))
             for credit in context.contents[1]
             if credit.get_text(strip=True).isdigit()
         ]
-        required_credit.append("-")
+        required_credit.append(0)  # 確保 `uncat` 為 0
 
+        # 解析已修、修習中、缺修學分
         earned_credit = parse_credits(context.contents[2])
         in_progress_credit = parse_credits(context.contents[3])
         missing_credit = parse_credits(context.contents[4])
 
-        return [
-            dict(zip(titles, required_credit)),
-            dict(zip(titles, earned_credit)),
-            dict(zip(titles, in_progress_credit)),
-            dict(zip(titles, missing_credit))
-        ]
+        # 確保所有數據匹配
+        result = {}
+        for idx, key in enumerate(Graduation.info_titles):
+            result[key] = {
+                "req": required_credit[idx],  # ✅ 確保 `req` 正確
+                "earned": earned_credit[idx]["credit"],
+                "count": earned_credit[idx]["count"],
+                "in_progress": in_progress_credit[idx]["credit"],
+                "missing": missing_credit[idx]["credit"],
+            }
+
+        return result
+
 
     @staticmethod
     def __get_language_cert_by_source_html(

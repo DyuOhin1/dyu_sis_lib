@@ -284,14 +284,21 @@ class CourseLeave:
 
         # 請假紀錄格式 be like new Array("請假編號", "請假類別", "請假種類", "理由", "請假狀態", "是否有訊息", "日期", "證明文件連結");
         pattern = r'new Array\("([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)",([^,]*),"([^"]*)",[^,]*,"([^"]*)"\);'
+        doc_link_pattern = "(http://\\d+\\.\\d+\\.\\d+\\.\\d+/dyu_vacation/up_load/\\d+/\\d+/\\w+/)"
+
         # 取得請假紀錄 matches，內容為 tuple，會包含 請假編號、請假類別、請假種類、理由、請假狀態、是否有訊息、日期、證明文件連結。
         matches = re.findall(pattern, res.text)
+        doc_link_matches = re.findall(doc_link_pattern, res.text)
+
+        doc_link = "http://163.23.1.52/dyu_vacation/up_load/113/2/" \
+            if len(doc_link_matches) != 0 else \
+            doc_link_matches[1]
 
         # 若無請假紀錄，則回傳空 list
         if len(matches) == 0:
             return []
         
-        return LeaveData.from_source(matches, conn.student_id)
+        return LeaveData.from_source(matches, doc_link, conn.student_id)
 
     @staticmethod
     def info(

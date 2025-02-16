@@ -168,3 +168,20 @@ class StudentInformationSystem:
             raise Exception(f"Logout failed, please try again, status code: {res.status_code}")
 
         conn = None
+
+    @staticmethod
+    def is_logged_in(
+            conn : Connection
+    ) -> bool:
+        res = requests.get(
+            "https://sis.dyu.edu.tw/website_map.php?page=MQ==",
+            cookies={
+                "PHPSESSID": conn.php_session_id
+            },
+            timeout=5,
+            allow_redirects=False
+        )
+
+        print(res.status_code)
+
+        return res.status_code == 200

@@ -116,3 +116,20 @@ class iCloud:
                      Failed to logout, code: {response.status_code},
                      content: {response.text}
                     """)
+
+    @staticmethod
+    def is_logged_in(
+            conn: Connection,
+    ) -> bool:
+      res = requests.get(
+          "https://icloud.dyu.edu.tw/index.php",
+          cookies={
+              "PHPSESSID": conn.php_session_id
+          },
+          timeout=5,
+          allow_redirects=False
+      )
+
+      print(res.status_code)
+
+      return res.status_code == 200
