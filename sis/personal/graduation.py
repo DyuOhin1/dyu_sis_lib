@@ -320,6 +320,6 @@ class Graduation:
             "data": [row.to_dict() for row in return_data],
             "passable": {
                 "title": result[0],
-                "result": "通過" if "通過" in result[1] else "不通過"
+                "result": "未通過" if "未通過" in result[1] else "通過"
             }
         }
