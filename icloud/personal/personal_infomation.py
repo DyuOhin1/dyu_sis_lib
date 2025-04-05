@@ -1,5 +1,6 @@
 import base64
 import json
+from textwrap import dedent
 from urllib.parse import urlencode
 
 import requests
@@ -85,7 +86,7 @@ class PersonalInformation:
         )
 
         for detail in data['detail']:
-            if str(detail['smye']) != semester or str(detail['smty']) != grade:
+            if str(detail['smye']) != semester or str(detail['smty']) != grade or not bool(detail['isPay']):
                 continue
 
             res = requests.get(

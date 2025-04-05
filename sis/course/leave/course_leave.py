@@ -221,8 +221,12 @@ class CourseLeave:
             # 取得請假訊息 matches，內容為 tuple，會包含 日期、審核者、審核原因。
             message_matches = re.findall(message_pattern, res.text)
             # 若無請假訊息，則 raise exception
-            if len(message_matches) != 0:
-                message = message_matches[1][2]
+            for match in message_matches:
+                if len(match) >= 3:
+                    if not match[2] or str(match[2]).strip() == '':
+                        continue
+                    message = match[2]
+
 
 
         # 設定請假詳細資訊，因為請假基本單位為每節課，因此可能有多筆請假詳細資訊
